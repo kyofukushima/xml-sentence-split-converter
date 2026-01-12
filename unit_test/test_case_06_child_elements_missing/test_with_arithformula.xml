@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Law DataInfo="250822e81k80m01" Era="Heisei" Lang="ja" LawType="Misc" Num="344" Year="27" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema/kokuji20250320_asukoe.xsd">
+  <LawNum>テスト用告示</LawNum>
+  <LawBody>
+    <MainProvision>
+      <Article Num="1">
+        <ArticleTitle></ArticleTitle>
+        <Paragraph Num="1">
+          <ParagraphNum></ParagraphNum>
+          <ParagraphSentence>
+            <Sentence Num="1">テスト1</Sentence>
+            <Sentence Num="2">テスト2</Sentence>
+            <Sentence Num="3">テスト3</Sentence>
+            <Sentence Num="4">（式）　<ArithFormula>Ｌｗ＝（Ｚ・Ａｉ・Ｃ<Sub>０</Sub>・Σｗｉ）／（０．０１９６・Ａｆｉ）</ArithFormula></Sentence>
+            <Sentence Num="5">Ｌｗ　単位面積あたりの必要壁量（単位　１ｍ<Sup>２</Sup>につきｃｍ）</Sentence>
+            <Sentence Num="6">Ｃ<Sub>０</Sub>　０．２（特定行政庁が令第８８条第２項の規定によって指定した区域内における場合においては、０．３）</Sentence>
+          </ParagraphSentence>
+        </Paragraph>
+      </Article>
+    </MainProvision>
+  </LawBody>
+</Law>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Law DataInfo="250822e81k80m01" Era="Heisei" Lang="ja" LawType="Misc" Num="344" Year="27" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema/kokuji20250320_asukoe.xsd" >
+  <LawNum>テスト用告示</LawNum>
+  <LawBody>
+    <MainProvision>
+      <Article Num="1">
+        <ArticleTitle></ArticleTitle>
+        <Paragraph Num="1">
+          <ParagraphNum></ParagraphNum>
+          <ParagraphSentence>
+            <List>
+              <ListSentence>
+                <Sentence Num="1">テスト1</Sentence>
+              </ListSentence>
+            </List>
+            <List>
+              <ListSentence>
+                <Sentence Num="1">テスト2</Sentence>
+              </ListSentence>
+            </List>
+            <List>
+              <ListSentence>
+                <Sentence Num="1">テスト3</Sentence>
+              </ListSentence>
+            </List>
+            <List>
+              <ListSentence>
+                <Column Num="1">
+                  <Sentence Num="1">（式）</Sentence>
+                </Column>
+                <Column Num="2">
+                  <Sentence Num="1"><ArithFormula>Ｌｗ＝（Ｚ・Ａｉ・Ｃ<Sub>０</Sub>・Σｗｉ）／（０．０１９６・Ａｆｉ）</ArithFormula></Sentence>
+                </Column>
+              </ListSentence>
+            </List>
+            <List>
+              <ListSentence>
+                <Column Num="1">
+                  <Sentence Num="1">Ｌｗ</Sentence>
+                </Column>
+                <Column Num="2">
+                  <Sentence Num="1">単位面積あたりの必要壁量（単位　１ｍ<Sup>２</Sup>につきｃｍ）</Sentence>
+                </Column>
+              </ListSentence>
+            </List>
+            <List>
+              <ListSentence>
+                <Column Num="1">
+                  <Sentence Num="1">Ｃ<Sub>０</Sub></Sentence>
+                </Column>
+                <Column Num="2">
+                  <Sentence Num="1">０．２（特定行政庁が令第８８条第２項の規定によって指定した区域内における場合においては、０．３）</Sentence>
+                </Column>
+              </ListSentence>
+            </List>
+          </ParagraphSentence>
+        </Paragraph>
+      </Article>
+    </MainProvision>
+  </LawBody>
+</Law>

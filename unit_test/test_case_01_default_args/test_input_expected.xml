@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Law DataInfo="250822e81k80m01" Era="Heisei" Lang="ja" LawType="Misc" Num="344" Year="27" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema/kokuji20250320_asukoe.xsd" >
+  <LawNum>平成二十七年厚生労働省告示第三百四十四号</LawNum>
+  <LawBody>
+    <MainProvision>
+      <Article Num="1">
+        <ArticleTitle></ArticleTitle>
+        <Paragraph Num="1">
+          <ParagraphNum></ParagraphNum>
+          <ParagraphSentence>
+            <List>
+              <ListSentence>
+                <Sentence Num="1">テキスト1</Sentence>
+              </ListSentence>
+            </List>
+            <List>
+              <ListSentence>
+                <Sentence Num="1">テキスト2</Sentence>
+              </ListSentence>
+            </List>
+            <List>
+              <ListSentence>
+                <Sentence Num="1">テキスト3</Sentence>
+              </ListSentence>
+            </List>
+            <List>
+              <ListSentence>
+                <Column Num="1">
+                  <Sentence Num="1">１</Sentence>
+                </Column>
+                <Column Num="2">
+                  <Sentence Num="1">項目1</Sentence>
+                </Column>
+              </ListSentence>
+            </List>
+            <List>
+              <ListSentence>
+                <Column Num="1">
+                  <Sentence Num="1">２</Sentence>
+                </Column>
+                <Column Num="2">
+                  <Sentence Num="1">項目2</Sentence>
+                </Column>
+              </ListSentence>
+            </List>
+          </ParagraphSentence>
+        </Paragraph>
+      </Article>
+    </MainProvision>
+  </LawBody>
+</Law>

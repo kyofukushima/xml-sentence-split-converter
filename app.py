@@ -100,6 +100,10 @@ with tab1:
                     
                     # 検証を自動実行
                     validation_result = ""
+                    validation_report_data = None
+                    validation_error = False
+                    validation_error_details = ""
+                    
                     try:
                         values1 = extract_values_from_xml_structure(input_path)
                         values2 = extract_values_from_xml_structure(output_path)
@@ -108,6 +112,7 @@ with tab1:
                         if result['identical']:
                             validation_result = "✅ **検証結果: 成功**\n\nすべての値が同一です。"
                         else:
+                            validation_error = True
                             validation_result = "❌ **検証結果: 差異検出**\n\n"
                             if result['missing_in_2']:
                                 validation_result += f"- ファイル2に欠落している値: {len(result['missing_in_2'])} 件\n"
@@ -115,8 +120,83 @@ with tab1:
                                 validation_result += f"- ファイル2に追加されている値: {len(result['extra_in_2'])} 件\n"
                             if result['order_differences']:
                                 validation_result += f"- 順序または内容の差異: {len(result['order_differences'])} 件\n"
+                            
+                            # 検証レポートを生成
+                            report_lines = []
+                            report_lines.append("# XML値比較レポート (構造無視)")
+                            report_lines.append("")
+                            report_lines.append(f"- **ファイル1**: `{uploaded_file.name}` - {len(values1)} 個の値")
+                            report_lines.append(f"- **ファイル2**: `{output_filename}` - {len(values2)} 個の値")
+                            report_lines.append(f"- **比較日時**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                            report_lines.append("")
+                            report_lines.append("## ❌ 検証結果: 差異検出")
+                            report_lines.append("")
+                            report_lines.append("以下の差異が見つかりました:")
+                            report_lines.append("")
+                            
+                            if result['missing_in_2']:
+                                report_lines.append(f"### 📝 ファイル2に欠落している値 ({len(result['missing_in_2'])} 件)")
+                                report_lines.append("")
+                                for i, value in enumerate(result['missing_in_2'][:50]):  # 最大50件表示
+                                    report_lines.append(f"{i+1}. `{repr(value[:200])}`")
+                                if len(result['missing_in_2']) > 50:
+                                    report_lines.append(f"**... 他 {len(result['missing_in_2']) - 50} 件**")
+                                report_lines.append("")
+                            
+                            if result['extra_in_2']:
+                                report_lines.append(f"### 📝 ファイル2に追加されている値 ({len(result['extra_in_2'])} 件)")
+                                report_lines.append("")
+                                for i, value in enumerate(result['extra_in_2'][:50]):
+                                    report_lines.append(f"{i+1}. `{repr(value[:200])}`")
+                                if len(result['extra_in_2']) > 50:
+                                    report_lines.append(f"**... 他 {len(result['extra_in_2']) - 50} 件**")
+                                report_lines.append("")
+                            
+                            if result['order_differences']:
+                                report_lines.append(f"### 🔄 順序または内容の差異 ({len(result['order_differences'])} 件)")
+                                report_lines.append("")
+                                for diff in result['order_differences'][:50]:
+                                    report_lines.append(f"**位置 {diff['position']}:**")
+                                    report_lines.append(f"- ファイル1: `{repr(diff['file1'][:200])}`")
+                                    report_lines.append(f"- ファイル2: `{repr(diff['file2'][:200])}`")
+                                    report_lines.append("")
+                                if len(result['order_differences']) > 50:
+                                    report_lines.append(f"**... 他 {len(result['order_differences']) - 50} 件**")
+                                    report_lines.append("")
+                            
+                            report_lines.append("## 📋 検証完了")
+                            report_lines.append("")
+                            report_lines.append(f"- 総差異数: {len(result['missing_in_2']) + len(result['extra_in_2']) + len(result['order_differences'])} 件")
+                            
+                            validation_report_data = '\n'.join(report_lines).encode('utf-8')
+                            
                     except Exception as e:
-                        validation_result = f"⚠️ 検証中にエラーが発生しました: {str(e)}"
+                        validation_error = True
+                        import traceback
+                        error_traceback = traceback.format_exc()
+                        validation_result = f"⚠️ **検証中にエラーが発生しました**\n\n**エラーメッセージ:** {str(e)}\n\n詳細はエラー詳細ファイルをダウンロードして確認してください。"
+                        validation_error_details = error_traceback
+                        
+                        # エラー詳細レポートを生成
+                        error_report_lines = []
+                        error_report_lines.append("# XML検証エラー詳細レポート")
+                        error_report_lines.append("")
+                        error_report_lines.append(f"- **入力ファイル**: `{uploaded_file.name}`")
+                        error_report_lines.append(f"- **出力ファイル**: `{output_filename}`")
+                        error_report_lines.append(f"- **エラー発生日時**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                        error_report_lines.append("")
+                        error_report_lines.append("## ❌ エラー情報")
+                        error_report_lines.append("")
+                        error_report_lines.append(f"**エラータイプ**: `{type(e).__name__}`")
+                        error_report_lines.append(f"**エラーメッセージ**: `{str(e)}`")
+                        error_report_lines.append("")
+                        error_report_lines.append("## 📋 エラー詳細（Traceback）")
+                        error_report_lines.append("")
+                        error_report_lines.append("```")
+                        error_report_lines.append(error_traceback)
+                        error_report_lines.append("```")
+                        
+                        validation_report_data = '\n'.join(error_report_lines).encode('utf-8')
                     
                     # 出力ファイルを読み込む
                     with open(output_path, 'rb') as f:
@@ -136,7 +216,33 @@ with tab1:
                     st.success(f"✅ **変換完了**\n\n- 入力ファイル: {uploaded_file.name}\n- 出力ファイル: {output_filename}")
                     
                     # 検証結果を表示
-                    st.markdown(validation_result)
+                    if validation_error:
+                        st.warning(validation_result)
+                    else:
+                        st.markdown(validation_result)
+                    
+                    # 検証エラーまたは差異検出の場合、エラー詳細ファイルをダウンロード可能にする
+                    if validation_error and validation_report_data:
+                        if validation_error_details:
+                            # 検証エラーの場合
+                            validation_report_filename = f"{input_file_path.stem}_validation_error.md"
+                            st.download_button(
+                                label="📄 検証エラー詳細をダウンロード",
+                                data=validation_report_data,
+                                file_name=validation_report_filename,
+                                mime="text/markdown",
+                                use_container_width=True
+                            )
+                        else:
+                            # 差異検出の場合
+                            validation_report_filename = f"{input_file_path.stem}_validation_report.md"
+                            st.download_button(
+                                label="📄 検証レポートをダウンロード",
+                                data=validation_report_data,
+                                file_name=validation_report_filename,
+                                mime="text/markdown",
+                                use_container_width=True
+                            )
                     
                     # XMLプレビュー
                     col_preview1, col_preview2 = st.columns(2)
@@ -227,13 +333,98 @@ with tab2:
                                 if result['identical']:
                                     validation_results.append(f"✅ {uploaded_file_name}: 検証成功")
                                 else:
-                                    validation_results.append(f"❌ {uploaded_file_name}: 差異検出 ({len(result['missing_in_2']) + len(result['extra_in_2']) + len(result['order_differences'])}件)")
+                                    diff_count = len(result['missing_in_2']) + len(result['extra_in_2']) + len(result['order_differences'])
+                                    validation_results.append(f"❌ {uploaded_file_name}: 差異検出 ({diff_count}件)")
+                                    
+                                    # 検証レポートを生成
+                                    input_file_path = Path(uploaded_file_name)
+                                    report_lines = []
+                                    report_lines.append("# XML値比較レポート (構造無視)")
+                                    report_lines.append("")
+                                    report_lines.append(f"- **ファイル1**: `{uploaded_file_name}` - {len(values1)} 個の値")
+                                    report_lines.append(f"- **ファイル2**: `{uploaded_file_name}` - {len(values2)} 個の値")
+                                    report_lines.append(f"- **比較日時**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                                    report_lines.append("")
+                                    report_lines.append("## ❌ 検証結果: 差異検出")
+                                    report_lines.append("")
+                                    report_lines.append("以下の差異が見つかりました:")
+                                    report_lines.append("")
+                                    
+                                    if result['missing_in_2']:
+                                        report_lines.append(f"### 📝 ファイル2に欠落している値 ({len(result['missing_in_2'])} 件)")
+                                        report_lines.append("")
+                                        for i, value in enumerate(result['missing_in_2'][:50]):
+                                            report_lines.append(f"{i+1}. `{repr(value[:200])}`")
+                                        if len(result['missing_in_2']) > 50:
+                                            report_lines.append(f"**... 他 {len(result['missing_in_2']) - 50} 件**")
+                                        report_lines.append("")
+                                    
+                                    if result['extra_in_2']:
+                                        report_lines.append(f"### 📝 ファイル2に追加されている値 ({len(result['extra_in_2'])} 件)")
+                                        report_lines.append("")
+                                        for i, value in enumerate(result['extra_in_2'][:50]):
+                                            report_lines.append(f"{i+1}. `{repr(value[:200])}`")
+                                        if len(result['extra_in_2']) > 50:
+                                            report_lines.append(f"**... 他 {len(result['extra_in_2']) - 50} 件**")
+                                        report_lines.append("")
+                                    
+                                    if result['order_differences']:
+                                        report_lines.append(f"### 🔄 順序または内容の差異 ({len(result['order_differences'])} 件)")
+                                        report_lines.append("")
+                                        for diff in result['order_differences'][:50]:
+                                            report_lines.append(f"**位置 {diff['position']}:**")
+                                            report_lines.append(f"- ファイル1: `{repr(diff['file1'][:200])}`")
+                                            report_lines.append(f"- ファイル2: `{repr(diff['file2'][:200])}`")
+                                            report_lines.append("")
+                                        if len(result['order_differences']) > 50:
+                                            report_lines.append(f"**... 他 {len(result['order_differences']) - 50} 件**")
+                                            report_lines.append("")
+                                    
+                                    report_lines.append("## 📋 検証完了")
+                                    report_lines.append("")
+                                    report_lines.append(f"- 総差異数: {diff_count} 件")
+                                    
+                                    # 検証レポートをファイルに保存
+                                    report_filename = f"{input_file_path.stem}_validation_report.md"
+                                    report_path = validation_dir / report_filename
+                                    with open(report_path, 'w', encoding='utf-8') as f:
+                                        f.write('\n'.join(report_lines))
+                                    
                             except Exception as e:
+                                import traceback
+                                error_traceback = traceback.format_exc()
                                 validation_results.append(f"⚠️ {uploaded_file_name}: 検証エラー - {str(e)}")
+                                
+                                # エラー詳細レポートを生成
+                                input_file_path = Path(uploaded_file_name)
+                                error_report_lines = []
+                                error_report_lines.append("# XML検証エラー詳細レポート")
+                                error_report_lines.append("")
+                                error_report_lines.append(f"- **入力ファイル**: `{uploaded_file_name}`")
+                                error_report_lines.append(f"- **出力ファイル**: `{uploaded_file_name}`")
+                                error_report_lines.append(f"- **エラー発生日時**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                                error_report_lines.append("")
+                                error_report_lines.append("## ❌ エラー情報")
+                                error_report_lines.append("")
+                                error_report_lines.append(f"**エラータイプ**: `{type(e).__name__}`")
+                                error_report_lines.append(f"**エラーメッセージ**: `{str(e)}`")
+                                error_report_lines.append("")
+                                error_report_lines.append("## 📋 エラー詳細（Traceback）")
+                                error_report_lines.append("")
+                                error_report_lines.append("```")
+                                error_report_lines.append(error_traceback)
+                                error_report_lines.append("```")
+                                
+                                # エラー詳細レポートをファイルに保存
+                                error_report_filename = f"{input_file_path.stem}_validation_error.md"
+                                error_report_path = validation_dir / error_report_filename
+                                with open(error_report_path, 'w', encoding='utf-8') as f:
+                                    f.write('\n'.join(error_report_lines))
                     
                     # ZIPファイルを作成（ファイル名を入力ファイル名_split.xml形式に変更）
                     zip_buffer = io.BytesIO()
                     with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zipf:
+                        # XMLファイルを追加
                         for file_path in output_dir.rglob("*.xml"):
                             # 元のファイル名から出力ファイル名を生成
                             original_filename = file_path.name
@@ -248,6 +439,10 @@ with tab2:
                             else:
                                 # 一致しない場合はそのまま
                                 zipf.write(file_path, file_path.relative_to(output_dir))
+                        
+                        # 検証レポートとエラー詳細ファイルを追加
+                        for report_path in validation_dir.rglob("*.md"):
+                            zipf.write(report_path, f"validation_results/{report_path.name}")
                     
                     zip_buffer.seek(0)
                     
@@ -257,7 +452,17 @@ with tab2:
                     # 検証結果を表示
                     st.markdown("**検証結果:**")
                     for result in validation_results:
-                        st.markdown(f"- {result}")
+                        if "⚠️" in result:
+                            st.warning(result)
+                        elif "❌" in result:
+                            st.error(result)
+                        else:
+                            st.markdown(f"- {result}")
+                    
+                    # 検証エラーや差異検出がある場合、ZIPに検証レポートが含まれていることを通知
+                    has_validation_issues = any("⚠️" in r or "❌" in r for r in validation_results)
+                    if has_validation_issues:
+                        st.info("ℹ️ 検証エラーや差異検出があったファイルの詳細レポートは、ZIPファイル内の `validation_results/` フォルダに含まれています。")
                     
                     # XMLプレビュー（最初のファイルのみ）
                     if uploaded_file_names:
@@ -348,4 +553,4 @@ with tab3:
 
 # サイドバー
 with st.sidebar:
-    st.markdown("**バージョン:** 1.0.0")
+    st.markdown("**バージョン:** 1.1.0")

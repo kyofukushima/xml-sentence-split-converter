@@ -163,9 +163,9 @@ def convert_xml(input_file, output_file):
         # 既存のSentence要素を削除し、List要素に変換
         sentences = list(paragraph_sentence)  # 子要素のコピーを作成
 
-        # Sentence要素が2つ以上の場合のみ変換を行う
+        # Sentence要素が10個以上の場合のみ変換を行う
         sentence_count = sum(1 for elem in sentences if elem.tag == 'Sentence')
-        if sentence_count >= 2:
+        if sentence_count >= 10:
             # すべての子要素をクリア
             paragraph_sentence.clear()
 

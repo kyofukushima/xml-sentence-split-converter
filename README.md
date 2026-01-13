@@ -4,7 +4,7 @@ XMLファイル内のSentence要素をList要素に変換するスクリプト�
 
 ## 機能
 
-- **条件付き変換**: ParagraphSentence内にSentence要素が2つ以上の場合のみ変換を実行
+- **条件付き変換**: ParagraphSentence内にSentence要素が10個以上の場合のみ変換を実行
 - Sentence要素内のテキストを空白で分割してColumn要素に変換
 - 冒頭10文字以内に空白がある場合のみ分割処理を実行
 - 最初の分割点以外の空白は保持

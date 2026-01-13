@@ -57,7 +57,7 @@ with st.expander("ℹ️ 機能説明", expanded=False):
         XMLファイル内のSentence要素をList要素に変換するWebアプリケーションです。
         
         **機能:**
-        - **条件付き変換**: ParagraphSentence内にSentence要素が2つ以上の場合のみ変換を実行
+        - **条件付き変換**: ParagraphSentence内にSentence要素が10個以上の場合のみ変換を実行
         - Sentence要素内のテキストを空白で分割してColumn要素に変換
         - 冒頭10文字以内に空白がある場合のみ分割処理を実行
         - 子要素（ArithFormula、Sub、Supなど）を正しく処理
@@ -336,7 +336,7 @@ with tab3:
         5. ZIPファイルをダウンロード
         
         ## 変換ルール
-        - ParagraphSentence内にSentence要素が**2つ以上**ある場合のみ変換
+        - ParagraphSentence内にSentence要素が**10個以上**ある場合のみ変換
         - 冒頭10文字以内に空白がある場合のみ分割処理を実行
         - 子要素（ArithFormula、Sub、Supなど）も正しく処理されます
         
